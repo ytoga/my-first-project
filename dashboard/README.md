@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+# Subscription Analytics Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+モバイルアプリのサブスクリプション契約状況を可視化するダッシュボードです。
 
-Currently, two official plugins are available:
+## 起動方法
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd dashboard
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 機能
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### KPI カード
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| カード | 説明 |
+|--------|------|
+| 有効サブスク数 | 選択期間末時点のアクティブ契約数 |
+| 新規登録 | 期間中の新規サブスクリプション合計 |
+| 解約 | 期間中の解約合計 |
+| MRR | 月次経常収益（円表示） |
+| トライアル転換率 | トライアル → 有料の転換率（%） |
+
+各カードには前期比の変動率バッジが表示されます。
+
+### フィルタ
+
+- **期間**: 日付ピッカーで開始日・終了日を指定
+- **OS**: iOS / Android をトグルで切り替え（複数選択可）
+- **プラン**: 月額 / 年額 をトグルで切り替え（複数選択可）
+
+フィルタを変更すると KPI 数値・4 種のグラフがすべてリアクティブに更新されます。
+
+### グラフ
+
+1. 有効サブスクリプション数 推移（エリアチャート）
+2. 新規登録 / 解約 推移（棒グラフ）
+3. MRR 推移（エリアチャート）
+4. トライアル転換率 推移（折れ線グラフ）
+
+### 生データビューア
+
+ヘッダー右上の「生データ」ボタンをクリックすると、フィルタ適用済みの日次集計データをテーブル形式で確認できます。
+
+- ソート: 各カラムヘッダーをクリックで昇順・降順を切り替え
+- 検索: 日付での絞り込みが可能（例: `2026-01`）
+- CSV エクスポート: 表示中のデータを CSV ファイルとしてダウンロード
+- ページネーション: 20 件ずつ表示
+
+### ダミーデータ
+
+データはすべてクライアントサイドで生成されるダミーデータです。
+
+- **ランダム性**: サーバー起動（ページ読み込み）のたびにシード値が変わるため、毎回異なるデータが生成されます
+- **リアルなトレンド**: 季節変動（Q1・Q4 は上振れ、夏は下振れ）、緩やかな成長トレンド、週末バイアスを含みます
+- **スパイク**: ランダムに大幅増加やディップが発生し、実運用データに近い揺らぎがあります
+- **セグメント差**: iOS が Android よりやや多め、月額が年額より多い現実的な比率です
+
+## 技術スタック
+
+- React + TypeScript
+- Vite
+- Tailwind CSS v4
+- Recharts
+- date-fns
+- Lucide React (アイコン)

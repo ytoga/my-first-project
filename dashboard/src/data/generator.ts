@@ -108,6 +108,10 @@ function generateForSegment(
   return records;
 }
 
+// Random base seed generated once at module load time.
+// Each page load / server restart produces different data.
+const SESSION_SEED = Math.floor(Math.random() * 0xffffffff);
+
 let cachedData: DailyRecord[] | null = null;
 let cachedStartDate: string | null = null;
 let cachedDays: number | null = null;
@@ -118,11 +122,12 @@ export function generateAllData(startDate: Date, days: number): DailyRecord[] {
     return cachedData;
   }
 
+  const s = SESSION_SEED;
   const segments: DailyRecord[] = [
-    ...generateForSegment('ios', 'monthly', startDate, days, 42),
-    ...generateForSegment('ios', 'annual', startDate, days, 137),
-    ...generateForSegment('android', 'monthly', startDate, days, 256),
-    ...generateForSegment('android', 'annual', startDate, days, 389),
+    ...generateForSegment('ios', 'monthly', startDate, days, s ^ 0x1a2b),
+    ...generateForSegment('ios', 'annual', startDate, days, s ^ 0x3c4d),
+    ...generateForSegment('android', 'monthly', startDate, days, s ^ 0x5e6f),
+    ...generateForSegment('android', 'annual', startDate, days, s ^ 0x7a8b),
   ];
 
   cachedData = segments;

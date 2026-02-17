@@ -6,6 +6,7 @@ import {
   UserMinus,
   DollarSign,
   RefreshCw,
+  Table2,
 } from 'lucide-react';
 import {
   generateAllData,
@@ -22,6 +23,7 @@ import {
   MrrChart,
   TrialConversionChart,
 } from './components/Charts';
+import { RawDataViewer } from './components/RawDataViewer';
 
 const DATA_START = new Date('2025-01-01T00:00:00');
 const DATA_DAYS = 420; // ~14 months of data
@@ -45,6 +47,7 @@ function App() {
   const [endDate, setEndDate] = useState(() => new Date('2026-02-16T00:00:00'));
   const [platforms, setPlatforms] = useState<Platform[]>(['ios', 'android']);
   const [plans, setPlans] = useState<Plan[]>(['monthly', 'annual']);
+  const [showRawData, setShowRawData] = useState(false);
 
   const filters: Filters = useMemo(
     () => ({ startDate, endDate, platforms, plans }),
@@ -71,6 +74,13 @@ function App() {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowRawData(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors cursor-pointer"
+              >
+                <Table2 className="w-4 h-4" />
+                生データ
+              </button>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Live
@@ -151,6 +161,11 @@ function App() {
           </p>
         </div>
       </footer>
+
+      {/* Raw Data Modal */}
+      {showRawData && (
+        <RawDataViewer data={daily} onClose={() => setShowRawData(false)} />
+      )}
     </div>
   );
 }
